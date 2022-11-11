@@ -1,42 +1,46 @@
 import "./App.css";
 
 function App() {
-  const generateDigits = () => {
-    const digits = [];
-    for (let i = 1; i < 10; i++) {
-      digits.push(<button key={i}>{i}</button>);
+  const generateButtons = () => {
+    let buttons = [];
+    const buttonValues = [
+      "AC",
+      "()",
+      "x**y",
+      "\u00F7",
+      7,
+      8,
+      9,
+      "x",
+      4,
+      5,
+      6,
+      "-",
+      1,
+      2,
+      3,
+      "x",
+      0,
+      ".",
+      "Del",
+      "=",
+    ];
+
+    for (let i = 0; i < buttonValues.length; i++) {
+      buttons.push(<button key={i + 1}>{buttonValues[i]}</button>);
     }
-    return digits;
+    return buttons;
   };
 
   return (
-    <>
-      <div className="greeting">Hi there! Check out the calculator below.</div>
+    <div className="App">
       <div className="calculator">
         <div className="display">
           <span>0</span>
         </div>
-        <div className="controls">
-          <button>AC</button>
-          <button>(</button>
-          <button>)</button>
-          <button>x**y</button>
-          <button>Delete</button>
-          <button>=</button>
-        </div>
-        <div className="operators">
-          <button>/</button>
-          <button>*</button>
-          <button>-</button>
-          <button>+</button>
-        </div>
-        <div className="digits">
-          <button>0</button>
-          <button>.</button>
-          {generateDigits()}
-        </div>
+        <div className="buttons-container">{generateButtons()}</div>
       </div>
-    </>
+    </div>
   );
 }
 
