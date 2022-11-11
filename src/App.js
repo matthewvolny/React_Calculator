@@ -1,24 +1,42 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
 
 function App() {
+  const generateDigits = () => {
+    const digits = [];
+    for (let i = 1; i < 10; i++) {
+      digits.push(<button key={i}>{i}</button>);
+    }
+    return digits;
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <div className="greeting">Hi there! Check out the calculator below.</div>
+      <div className="calculator">
+        <div className="display">
+          <span>0</span>
+        </div>
+        <div className="controls">
+          <button>AC</button>
+          <button>(</button>
+          <button>)</button>
+          <button>x**y</button>
+          <button>Delete</button>
+          <button>=</button>
+        </div>
+        <div className="operators">
+          <button>/</button>
+          <button>*</button>
+          <button>-</button>
+          <button>+</button>
+        </div>
+        <div className="digits">
+          <button>0</button>
+          <button>.</button>
+          {generateDigits()}
+        </div>
+      </div>
+    </>
   );
 }
 
