@@ -6,28 +6,55 @@ function App() {
   const [calc, setCalc] = useState("");
   const [result, setResult] = useState("");
   const [displayedResult, setDisplayedResult] = useState("");
+  const [operatorUsed, setOperatorUsed] = useState(false);
 
   const updateCalculation = (value) => {
-    let operators = ["\u00F7", "x", "-", "+", "."];
+    let operators = ["\u00F7", "\u02C4", "x", "-", "+", ".", "(", ")"];
+    if (operators.slice(0, 5).includes(value)) {
+      setOperatorUsed(true);
+    }
     if (
       operators.includes(value) &&
       operators.includes(calc[calc.length - 1])
     ) {
       return;
     }
+
+    if (value === "( )" && calc.includes("(")) {
+      value = ")";
+    } else if (value === "( )") {
+      value = "(";
+    }
+
     setCalc(calc + value);
 
     if (value === "\u00F7") {
       value = "/";
     } else if (value === "x") {
       value = "*";
+    } else if (value === "\u02C4") {
+      value = "**";
     }
+
     setResult(result + value);
   };
 
   useEffect(() => {
     let operators = ["/", "*", "-", "+", "."];
-    if (result.length >= 3 && !operators.includes(result[result.length - 1])) {
+    let parenthesesCount = 0;
+    for (const value of calc) {
+      if (value === "(" || value === ")") {
+        parenthesesCount++;
+      }
+    }
+
+    if (!operatorUsed && parenthesesCount === 0 && !result.includes("**")) {
+      return;
+    } else if (
+      result.length >= 3 &&
+      !operators.includes(result[result.length - 1]) &&
+      parenthesesCount % 2 === 0
+    ) {
       setDisplayedResult(eval(result).toString());
     }
   }, [result]);
@@ -60,6 +87,12 @@ function App() {
     }
   };
 
+  const clearCalculator = () => {
+    setCalc("");
+    setResult("");
+    setDisplayedResult("");
+  };
+
   const basicValues = [
     "\u00F7",
     7,
@@ -88,7 +121,7 @@ function App() {
         <div className="buttons-container">
           <button
             className="purple-button"
-            onClick={() => updateCalculation("AC")}
+            onClick={() => clearCalculator("AC")}
           >
             AC
           </button>
