@@ -28,14 +28,36 @@ function App() {
   useEffect(() => {
     let operators = ["/", "*", "-", "+", "."];
     if (result.length >= 3 && !operators.includes(result[result.length - 1])) {
-      console.log("hi");
       setDisplayedResult(eval(result).toString());
     }
   }, [result]);
 
-  const calculateResult = () => {
+  const moveResult = () => {
     setCalc(displayedResult);
     setDisplayedResult("");
+  };
+
+  const deleteCalculation = () => {
+    let newCalc = calc.split("");
+    newCalc.pop();
+    setCalc(newCalc.join(""));
+
+    let newResult = result.split("");
+    newResult.pop();
+    const newResultString = newResult.join("");
+    setResult(newResultString);
+
+    let operators = ["/", "*", "-", "+", "."];
+    if (
+      newResultString.length >= 3 &&
+      operators.includes(newResultString[newResultString.length - 1])
+    ) {
+      setDisplayedResult(
+        eval(newResultString.slice(0, newResultString.length - 1)).toString()
+      );
+    } else {
+      setDisplayedResult("");
+    }
   };
 
   const basicValues = [
@@ -93,14 +115,11 @@ function App() {
           })}
           <button
             className="purple-button"
-            onClick={() => updateCalculation("Del")}
+            onClick={() => deleteCalculation("Del")}
           >
             Del
           </button>
-          <button
-            className="purple-button"
-            onClick={() => calculateResult("=")}
-          >
+          <button className="purple-button" onClick={() => moveResult("=")}>
             =
           </button>
         </div>
