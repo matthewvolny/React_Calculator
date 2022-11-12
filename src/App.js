@@ -1,10 +1,11 @@
 import "./App.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "./components/Button";
 
 function App() {
   const [calc, setCalc] = useState("");
   const [result, setResult] = useState("");
+  const [displayedResult, setDisplayedResult] = useState("");
 
   const updateCalculation = (value) => {
     let operators = ["\u00F7", "x", "-", "+", "."];
@@ -15,11 +16,26 @@ function App() {
       return;
     }
     setCalc(calc + value);
+
+    if (value === "\u00F7") {
+      value = "/";
+    } else if (value === "x") {
+      value = "*";
+    }
+    setResult(result + value);
   };
 
+  useEffect(() => {
+    let operators = ["/", "*", "-", "+", "."];
+    if (result.length >= 3 && !operators.includes(result[result.length - 1])) {
+      console.log("hi");
+      setDisplayedResult(eval(result).toString());
+    }
+  }, [result]);
+
   const calculateResult = () => {
-    setResult(calc);
-    console.log(calc);
+    setCalc(displayedResult);
+    setDisplayedResult("");
   };
 
   const basicValues = [
@@ -44,7 +60,8 @@ function App() {
     <div className="App">
       <div className="calculator">
         <div className="display">
-          <span>{calc || "0"}</span>
+          <div>{calc || "0"}</div>
+          <div className="result">{displayedResult}</div>
         </div>
         <div className="buttons-container">
           <button
