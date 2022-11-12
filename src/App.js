@@ -1,36 +1,29 @@
 import "./App.css";
+import { Button } from "./components/Button";
 
 function App() {
-  const generateButtons = () => {
-    let buttons = [];
-    const buttonValues = [
-      "AC",
-      "()",
-      "x**y",
-      "\u00F7",
-      7,
-      8,
-      9,
-      "x",
-      4,
-      5,
-      6,
-      "-",
-      1,
-      2,
-      3,
-      "x",
-      0,
-      ".",
-      "Del",
-      "=",
-    ];
-
-    for (let i = 0; i < buttonValues.length; i++) {
-      buttons.push(<button key={i + 1}>{buttonValues[i]}</button>);
-    }
-    return buttons;
-  };
+  const buttonValues = [
+    "AC",
+    "( )",
+    "\u02C4",
+    "\u00F7",
+    7,
+    8,
+    9,
+    "x",
+    4,
+    5,
+    6,
+    "-",
+    1,
+    2,
+    3,
+    "+",
+    0,
+    ".",
+    "Del",
+    "=",
+  ];
 
   return (
     <div className="App">
@@ -38,7 +31,11 @@ function App() {
         <div className="display">
           <span>0</span>
         </div>
-        <div className="buttons-container">{generateButtons()}</div>
+        <div className="buttons-container">
+          {buttonValues.map((button, i) => {
+            return <Button key={i} button={button} />;
+          })}
+        </div>
       </div>
     </div>
   );

@@ -24,10 +24,9 @@ body {
   display: flex;
   flex-direction: column;
   background-color: white;
-  border: 0.8rem solid #9174f9;
+  border: 0.74rem solid #9174f9;
   border-radius: 3.5rem;
-  /* padding: 1rem; */
-  height: 600px;
+  height: 640px;
   width: 100%;
   max-width: 325px;
   margin: 0 auto;
@@ -36,40 +35,57 @@ body {
 }
 
 .display {
-  /* outline: 1px solid red; */
-  /* border-radius: 3rem 3rem 0 0; */
-  height: 40%;
+  height: 36%;
   padding: 5rem 2rem;
   font-size: 2.5rem;
+  color: black;
+  opacity: 0.75;
   background-color: #f5f7fb;
   text-align: right;
   font-family: Arial, Helvetica, sans-serif;
 }
 
 .buttons-container {
-  border: 1px solid red;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  margin: 0 auto;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   grid-template-rows: repeat(5, 1fr);
-  grid-column-gap: 0px;
-  grid-row-gap: 0px;
+  grid-column-gap: 5px;
+  grid-row-gap: 5px;
 }
 
-.controls button {
+.purple-button {
   color: #7651f5;
+  opacity: 0.75;
+}
+
+.shaded-button {
+  color: white;
+  background-color: #7651f5;
+  border-radius: 50%;
 }
 
 button {
   appearance: none;
   outline: none;
+  width: 60px;
+  height: 60px;
+  background-color: white;
+  border: none;
+  border-radius: 50%;
   color: black;
-  font-size: 1.5rem;
+  opacity: 0.75;
+  font-size: 1.3rem;
   padding: 0.5rem;
   cursor: pointer;
   transition: 0.5ms;
-  min-width: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 button:hover {
-  border: 1px solid grey;
+  box-shadow: 0px 0px 7px rgba(118, 81, 245, 0.2);
 }
