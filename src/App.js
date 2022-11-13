@@ -7,9 +7,10 @@ function App() {
   const [result, setResult] = useState("");
   const [displayedResult, setDisplayedResult] = useState("");
   const [operatorUsed, setOperatorUsed] = useState(false);
+  const [parenthesesCount, setParenthesesCount] = useState(0);
 
   const updateCalculation = (value) => {
-    let operators = ["\u00F7", "\u02C4", "x", "-", "+", ".", "(", ")"];
+    let operators = ["\u00F7", "\u02C4", "x", "-", "+", ".", "("];
     if (operators.slice(0, 5).includes(value)) {
       setOperatorUsed(true);
     }
@@ -20,7 +21,16 @@ function App() {
       return;
     }
 
-    if (value === "( )" && calc.includes("(")) {
+    let nums = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "."];
+
+    if (
+      (value === "( )" && calc[calc.length - 1] === "(") ||
+      (value === "( )" &&
+        calc.length === 1 &&
+        nums.includes(calc[calc.length - 1]))
+    ) {
+      return;
+    } else if (value === "( )" && calc.includes("(")) {
       value = ")";
     } else if (value === "( )") {
       value = "(";
@@ -41,14 +51,19 @@ function App() {
 
   useEffect(() => {
     let operators = ["/", "*", "-", "+", "."];
-    let parenthesesCount = 0;
+    let parenthesesCounter = 0;
     for (const value of calc) {
       if (value === "(" || value === ")") {
-        parenthesesCount++;
+        parenthesesCounter++;
       }
     }
 
-    if (!operatorUsed && parenthesesCount === 0 && !result.includes("**")) {
+    setParenthesesCount(parenthesesCounter);
+
+    if (
+      (!operatorUsed && parenthesesCount === 0 && !result.includes("**")) ||
+      result[result.length - 1] === "("
+    ) {
       return;
     } else if (
       result.length >= 3 &&
