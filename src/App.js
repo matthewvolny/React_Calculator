@@ -7,17 +7,22 @@ function App() {
   const [calc, setCalc] = useState("");
   const [formattedCalc, setFormattedCalc] = useState("");
   const [displayedResult, setDisplayedResult] = useState("");
-  const [operatorUsed, setOperatorUsed] = useState(false);
+  const [operatorCount, setOperatorCount] = useState(0);
   const [parenthesesCount, setParenthesesCount] = useState(0);
 
   const updateCalculation = (value) => {
-    let operators = ["\u00F7", "\u02C4", "\u00D7", "-", "+", ".", "("];
+    let operators = ["\u00F7", "\u02C4", "\u00D7", "+", "-", "."];
+
     if (operators.slice(0, 5).includes(value)) {
-      setOperatorUsed(true);
+      setOperatorCount(operatorCount + 1);
     }
+
+    //cannot have two operators in a row
+    // cannot have an operator as the first value
     if (
-      operators.includes(value) &&
-      operators.includes(calc[calc.length - 1])
+      (operators.includes(value) &&
+        operators.includes(calc[calc.length - 1])) ||
+      (operators.slice(0, 4).includes(value) && calc.length === 0)
     ) {
       return;
     }
@@ -31,23 +36,33 @@ function App() {
 
     let digits = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "."];
 
+    //parentheses handling
+    // cannot have (), )(, or 2(
     if (
       (value === "( )" && calc[calc.length - 1] === "(") ||
+      (value === "( )" && calc[calc.length - 1] === ")") ||
       (value === "( )" &&
         parenthesesCount % 2 === 0 &&
         digits.includes(calc[calc.length - 1]))
     ) {
       return;
-    } else if (value === "( )" && calc.includes("(")) {
+    } else if (
+      value === "( )" &&
+      parenthesesCount % 2 !== 0 &&
+      calc.includes("(")
+    ) {
       value = ")";
-      setParenthesesCount(parenthesesCounter++);
+      parenthesesCounter++;
+      setParenthesesCount(parenthesesCounter);
     } else if (value === "( )") {
       value = "(";
-      setParenthesesCount(parenthesesCounter++);
+      parenthesesCounter++;
+      setParenthesesCount(parenthesesCounter);
     }
 
     setCalc(calc + value);
 
+    //format calculation
     if (value === "\u00F7") {
       value = "/";
     } else if (value === "\u00D7") {
@@ -62,11 +77,13 @@ function App() {
   useEffect(() => {
     let operators = ["/", "*", "-", "+", "."];
 
-    if (
-      (!operatorUsed &&
+    if (operatorCount === 0) {
+      return;
+    } else if (
+      (operatorCount === 0 &&
         parenthesesCount === 0 &&
         !formattedCalc.includes("**")) ||
-      formattedCalc[formattedCalc.length - 1] === "("
+      parenthesesCount % 2 !== 0
     ) {
       return;
     } else if (
@@ -83,6 +100,7 @@ function App() {
     setCalc("");
     setFormattedCalc("");
     setDisplayedResult("");
+    setOperatorCount(0);
   };
 
   //sets displayed calculation to current total
@@ -91,12 +109,24 @@ function App() {
       setCalc(displayedResult);
       setFormattedCalc(displayedResult);
       setDisplayedResult("");
+      setOperatorCount(0);
     }
   };
 
   //delete last value from current calculation
   const deleteCalculation = () => {
+    //update # of operators in calculation
+    let calcOperators = ["\u00F7", "\u02C4", "\u00D7", "+", "-", "."];
+
+    if (calcOperators.slice(0, 5).includes(calc[calc.length - 1])) {
+      setOperatorCount(operatorCount - 1);
+    }
+
     setCalc(deleteVal(calc));
+
+    if (formattedCalc[formattedCalc.length - 1] === ")") {
+      setParenthesesCount(parenthesesCount - 1);
+    }
 
     const newResultString = deleteVal(formattedCalc);
     setFormattedCalc(newResultString);
@@ -104,7 +134,11 @@ function App() {
     let operators = ["/", "*", "-", "+", "."];
 
     //if deleting value reveals an operator at the end, omit it in evaluation
-    if (
+    //if deleting value reveals odd number of parentheses, do not evaluate
+    if (parenthesesCount % 2 !== 0) {
+      console.log("here");
+      return;
+    } else if (
       newResultString.length >= 3 &&
       operators.includes(newResultString[newResultString.length - 1])
     ) {
