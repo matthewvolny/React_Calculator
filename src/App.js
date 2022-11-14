@@ -20,7 +20,8 @@ function App() {
     //cannot have two operators in a row
     // cannot have an operator as the first value
     if (
-      (operators.includes(value) &&
+      (value !== "." &&
+        operators.includes(value) &&
         operators.includes(calc[calc.length - 1])) ||
       (operators.slice(0, 4).includes(value) && calc.length === 0)
     ) {
@@ -77,6 +78,8 @@ function App() {
   useEffect(() => {
     let operators = ["/", "*", "-", "+", "."];
 
+    //if no operators in calc, do not evaluate
+    //if # of parentheses not even, do not evaluate
     if (operatorCount === 0) {
       return;
     } else if (
@@ -133,11 +136,15 @@ function App() {
 
     let operators = ["/", "*", "-", "+", "."];
 
-    //if deleting value reveals an operator at the end, omit it in evaluation
     //if deleting value reveals odd number of parentheses, do not evaluate
+    //if deleting value reveals ** at the end, omit them in evaluation
+    //if deleting value reveals an operator at the end, omit it in evaluation
     if (parenthesesCount % 2 !== 0) {
-      console.log("here");
       return;
+    } else if (newResultString[newResultString.length - 1] === "*") {
+      setDisplayedResult(
+        eval(newResultString.slice(0, newResultString.length - 2)).toString()
+      );
     } else if (
       newResultString.length >= 3 &&
       operators.includes(newResultString[newResultString.length - 1])
