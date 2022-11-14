@@ -2,15 +2,16 @@ import React from "react";
 
 export const Button = (props) => {
   if (
+    props.button === "( )" ||
+    props.button === "\u02C4" ||
     props.button === "\u00F7" ||
-    props.button === "x" ||
+    props.button === "\u00D7" ||
     props.button === "-" ||
     props.button === "+"
   ) {
     return (
       <button
         className="purple-button"
-        value={props.button}
         onClick={() => props.updateCalculation(props.button)}
       >
         {props.button}
@@ -18,10 +19,7 @@ export const Button = (props) => {
     );
   } else {
     return (
-      <button
-        value={props.button}
-        onClick={() => props.updateCalculation(props.button)}
-      >
+      <button onClick={() => props.updateCalculation(props.button)}>
         {props.button}
       </button>
     );

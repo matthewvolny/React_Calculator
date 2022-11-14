@@ -1,16 +1,17 @@
 import "./App.css";
 import { useEffect, useState } from "react";
 import { Button } from "./components/Button";
+import { deleteVal } from "./utils/deleteVal";
 
 function App() {
   const [calc, setCalc] = useState("");
-  const [result, setResult] = useState("");
+  const [formattedCalc, setFormattedCalc] = useState("");
   const [displayedResult, setDisplayedResult] = useState("");
   const [operatorUsed, setOperatorUsed] = useState(false);
   const [parenthesesCount, setParenthesesCount] = useState(0);
 
   const updateCalculation = (value) => {
-    let operators = ["\u00F7", "\u02C4", "x", "-", "+", ".", "("];
+    let operators = ["\u00F7", "\u02C4", "\u00D7", "-", "+", ".", "("];
     if (operators.slice(0, 5).includes(value)) {
       setOperatorUsed(true);
     }
@@ -21,36 +22,6 @@ function App() {
       return;
     }
 
-    let nums = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "."];
-
-    if (
-      (value === "( )" && calc[calc.length - 1] === "(") ||
-      (value === "( )" &&
-        calc.length === 1 &&
-        nums.includes(calc[calc.length - 1]))
-    ) {
-      return;
-    } else if (value === "( )" && calc.includes("(")) {
-      value = ")";
-    } else if (value === "( )") {
-      value = "(";
-    }
-
-    setCalc(calc + value);
-
-    if (value === "\u00F7") {
-      value = "/";
-    } else if (value === "x") {
-      value = "*";
-    } else if (value === "\u02C4") {
-      value = "**";
-    }
-
-    setResult(result + value);
-  };
-
-  useEffect(() => {
-    let operators = ["/", "*", "-", "+", "."];
     let parenthesesCounter = 0;
     for (const value of calc) {
       if (value === "(" || value === ")") {
@@ -58,38 +29,81 @@ function App() {
       }
     }
 
-    setParenthesesCount(parenthesesCounter);
+    let digits = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "."];
 
     if (
-      (!operatorUsed && parenthesesCount === 0 && !result.includes("**")) ||
-      result[result.length - 1] === "("
+      (value === "( )" && calc[calc.length - 1] === "(") ||
+      (value === "( )" &&
+        parenthesesCount % 2 === 0 &&
+        digits.includes(calc[calc.length - 1]))
+    ) {
+      return;
+    } else if (value === "( )" && calc.includes("(")) {
+      value = ")";
+      setParenthesesCount(parenthesesCounter++);
+    } else if (value === "( )") {
+      value = "(";
+      setParenthesesCount(parenthesesCounter++);
+    }
+
+    setCalc(calc + value);
+
+    if (value === "\u00F7") {
+      value = "/";
+    } else if (value === "\u00D7") {
+      value = "*";
+    } else if (value === "\u02C4") {
+      value = "**";
+    }
+
+    setFormattedCalc(formattedCalc + value);
+  };
+
+  useEffect(() => {
+    let operators = ["/", "*", "-", "+", "."];
+
+    if (
+      (!operatorUsed &&
+        parenthesesCount === 0 &&
+        !formattedCalc.includes("**")) ||
+      formattedCalc[formattedCalc.length - 1] === "("
     ) {
       return;
     } else if (
-      result.length >= 3 &&
-      !operators.includes(result[result.length - 1]) &&
+      formattedCalc.length >= 3 &&
+      !operators.includes(formattedCalc[formattedCalc.length - 1]) &&
       parenthesesCount % 2 === 0
     ) {
-      setDisplayedResult(eval(result).toString());
+      setDisplayedResult(eval(formattedCalc).toString());
     }
-  }, [result]);
+  }, [formattedCalc]);
 
-  const moveResult = () => {
-    setCalc(displayedResult);
+  //clears calculator
+  const clearCalculator = () => {
+    setCalc("");
+    setFormattedCalc("");
     setDisplayedResult("");
   };
 
-  const deleteCalculation = () => {
-    let newCalc = calc.split("");
-    newCalc.pop();
-    setCalc(newCalc.join(""));
+  //sets displayed calculation to current total
+  const moveResult = () => {
+    if (displayedResult) {
+      setCalc(displayedResult);
+      setFormattedCalc(displayedResult);
+      setDisplayedResult("");
+    }
+  };
 
-    let newResult = result.split("");
-    newResult.pop();
-    const newResultString = newResult.join("");
-    setResult(newResultString);
+  //delete last value from current calculation
+  const deleteCalculation = () => {
+    setCalc(deleteVal(calc));
+
+    const newResultString = deleteVal(formattedCalc);
+    setFormattedCalc(newResultString);
 
     let operators = ["/", "*", "-", "+", "."];
+
+    //if deleting value reveals an operator at the end, omit it in evaluation
     if (
       newResultString.length >= 3 &&
       operators.includes(newResultString[newResultString.length - 1])
@@ -102,18 +116,14 @@ function App() {
     }
   };
 
-  const clearCalculator = () => {
-    setCalc("");
-    setResult("");
-    setDisplayedResult("");
-  };
-
   const basicValues = [
+    "( )",
+    "\u02C4",
     "\u00F7",
     7,
     8,
     9,
-    "x",
+    "\u00D7",
     4,
     5,
     6,
@@ -140,18 +150,6 @@ function App() {
           >
             AC
           </button>
-          <button
-            className="purple-button"
-            onClick={() => updateCalculation("( )")}
-          >
-            ( )
-          </button>
-          <button
-            className="purple-button"
-            onClick={() => updateCalculation("\u02C4")}
-          >
-            {"\u02C4"}
-          </button>
           {basicValues.map((button, i) => {
             return (
               <Button
@@ -167,7 +165,7 @@ function App() {
           >
             Del
           </button>
-          <button className="purple-button" onClick={() => moveResult("=")}>
+          <button className="shaded-button" onClick={() => moveResult("=")}>
             =
           </button>
         </div>

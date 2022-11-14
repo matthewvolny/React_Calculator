@@ -27,30 +27,59 @@ body {
   border: 0.74rem solid #9174f9;
   border-radius: 3.5rem;
   height: 640px;
-  width: 100%;
-  max-width: 330px;
+  width: 330px;
   margin: 0 auto;
   box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.2);
   overflow: hidden;
 }
 
 .display {
-  height: 35.5%;
-  padding: 5rem 2rem;
+  height: 39%;
+  padding: 4rem 2rem;
   font-size: 2.5rem;
   color: black;
   opacity: 0.75;
+  letter-spacing: 0.01rem;
   background-color: #f5f7fb;
   text-align: right;
   font-family: Arial, Helvetica, sans-serif;
+  --mask: radial-gradient(
+        67.08px at 50% calc(100% - 90px),
+        #000 99%,
+        #0000 101%
+      )
+      calc(50% - 60px) 0/120px 100%,
+    radial-gradient(67.08px at 50% calc(100% + 60px), #0000 99%, #000 101%) 50%
+      calc(100% - 30px) / 120px 87% repeat-x;
+  -webkit-mask: var(--mask);
+  mask: var(--mask);
 }
 
+/* .box {
+  --mask:
+    radial-gradient(67.08px at 50% 90.00px,#000 99%,#0000 101%) calc(50% - 60px) 0/120px 100%,
+    radial-gradient(67.08px at 50% -60px,#0000 99%,#000 101%) 50% 30px/120px 100% repeat-x;
+  -webkit-mask: var(--mask);
+          mask: var(--mask);
+} */
+
+/* bottom */
+/* .box {
+  --mask:
+    radial-gradient(67.08px at 50% calc(100% - 90.00px),#000 99%,#0000 101%) calc(50% - 60px) 0/120px 100%,
+    radial-gradient(67.08px at 50% calc(100% + 60.00px),#0000 99%,#000 101%) 50% calc(100% - 30px)/120px 100% repeat-x;
+  -webkit-mask: var(--mask);
+          mask: var(--mask);
+} */
+
 .result {
+  margin-top: 0.2rem;
   font-size: 1.8rem;
+  letter-spacing: 0.01rem;
 }
 
 .buttons-container {
-  padding-top: 1rem;
+  padding-top: 0.15rem;
   padding-bottom: 1rem;
   margin: 0 auto;
   display: grid;
